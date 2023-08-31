@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Comment;
 use App\Http\Requests\StoreCommentRequest;
 use App\Http\Requests\UpdateCommentRequest;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class CommentController extends Controller
 {
@@ -13,7 +14,10 @@ class CommentController extends Controller
      */
     public function index()
     {
-        //
+        $comment = Comment::all();
+        return response()->json([
+            'data' => $comment
+        ]);
     }
 
     /**
@@ -21,7 +25,17 @@ class CommentController extends Controller
      */
     public function store(StoreCommentRequest $request)
     {
-        //
+        $comment = Comment::query()->create([
+            'body' => $request->body,
+            'user_id' => $request->user_id,
+            'post_id' => $request->post_id
+        ]);
+
+        return new JsonResponse([
+            'status' => true,
+            'message' => 'Records stored successfully',
+            'data' => $comment
+        ]);
     }
 
     /**
